@@ -1,0 +1,53 @@
+# Entorno virtual de Python
+premium-cars/
+venv/
+.env
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de distribución
+build/
+dist/
+*.egg-info/
+*.eggs/
+
+# Archivos de configuración local
+*.sqlite3
+*.db
+
+# Configuración de IDEs y editores
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de pruebas y cobertura
+htmlcov/
+.tox/
+.coverage
+coverage.xml
+.pytest_cache/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Archivos específicos de VS Code Copilot
+.local-history/
+
+# Node/npm (por si hay frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de caché/permisos
+*.swp
+*.tmp
+*.temp

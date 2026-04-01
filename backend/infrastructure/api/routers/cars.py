@@ -1,0 +1,133 @@
+"""
+Router del catálogo de coches.
+Expone endpoints CRUD con distintos niveles de acceso según el rol del usuario.
+"""
+from typing import Annotated, List, Optional, Union
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+
+from application.use_cases.car_use_cases import CarUseCases
+from domain.entities.user import User
+from infrastructure.api.container import get_car_use_cases
+from infrastructure.api.dependencies import get_admin_user, get_current_user, get_optional_current_user
+from infrastructure.api.schemas.car_schemas import (
+    CarCreate,
+    CarFullResponse,
+    CarPublicResponse,
+    CarUpdate,
+)
+from infrastructure.api.schemas.favorite_schemas import MessageResponse
+
+router = APIRouter(prefix="/cars", tags=["Catálogo de Coches"])
+
+
+@router.get(
+    "",
+    summary="Listar catálogo de coches",
+    description=(
+        "Devuelve el catálogo completo con filtros opcionales.\n\n"
+        "- **Anónimo**: solo recibe `id`, `marca`, `modelo` e `imagen_url`.\n"
+        "- **Usuario autenticado**: recibe la ficha técnica completa.\n\n"
+        "**Parámetros de filtro:**\n"
+        "- `marca`: filtra por nombre exacto de marca (ej: `Porsche`).\n"
+        "- `velocidad_max`: muestra coches con velocidad máxima **≥** al valor.\n"
+        "- `cv`: muestra coches con potencia **≥** al valor indicado.\n"
+        "- `precio_min` / `precio_max`: rango de precio en euros."
+    ),
+)
+async def get_cars(
+    marca: Annotated[Optional[str], Query(description="Filtrar por marca (ej: Ferrari)")] = None,
+    velocidad_max: Annotated[Optional[int], Query(description="Velocidad máxima mínima en km/h", ge=1)] = None,
+    cv: Annotated[Optional[int], Query(description="Caballos de vapor mínimos", ge=1)] = None,
+    precio_min: Annotated[Optional[float], Query(description="Precio mínimo en euros", ge=0)] = None,
+    precio_max: Annotated[Optional[float], Query(description="Precio máximo en euros", ge=0)] = None,
+    current_user: Optional[User] = Depends(get_optional_current_user),
+    use_cases: CarUseCases = Depends(get_car_use_cases),
+) -> List[Union[CarFullResponse, CarPublicResponse]]:
+    cars = use_cases.get_all_cars(
+        marca=marca,
+        velocidad_max=velocidad_max,
+        cv=cv,
+        precio_min=precio_min,
+        precio_max=precio_max,
+    )
+    if current_user:
+        return [CarFullResponse.model_validate(car.model_dump()) for car in cars]
+    return [CarPublicResponse.model_validate(car.model_dump()) for car in cars]
+
+
+@router.get(
+    "/{car_id}",
+    response_model=CarFullResponse,
+    summary="Obtener ficha técnica de un coche",
+    description="Devuelve la ficha técnica completa de un coche por su ID. Requiere autenticación.",
+)
+async def get_car(
+    car_id: int,
+    current_user: User = Depends(get_current_user),
+    use_cases: CarUseCases = Depends(get_car_use_cases),
+) -> CarFullResponse:
+    car = use_cases.get_car_by_id(car_id)
+    if not car:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Coche con ID {car_id} no encontrado en el catálogo.",
+        )
+    return CarFullResponse.model_validate(car.model_dump())
+
+
+@router.post(
+    "",
+    response_model=CarFullResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Añadir un coche al catálogo",
+    description="Crea un nuevo coche en el catálogo. **Requiere rol Admin.**",
+)
+async def create_car(
+    car_data: CarCreate,
+    _admin: User = Depends(get_admin_user),
+    use_cases: CarUseCases = Depends(get_car_use_cases),
+) -> CarFullResponse:
+    new_car = use_cases.create_car(car_data.model_dump())
+    return CarFullResponse.model_validate(new_car.model_dump())
+
+
+@router.put(
+    "/{car_id}",
+    response_model=CarFullResponse,
+    summary="Actualizar un coche",
+    description="Actualiza los datos de un coche existente. **Requiere rol Admin.**",
+)
+async def update_car(
+    car_id: int,
+    car_data: CarUpdate,
+    _admin: User = Depends(get_admin_user),
+    use_cases: CarUseCases = Depends(get_car_use_cases),
+) -> CarFullResponse:
+    updated_car = use_cases.update_car(car_id, car_data.model_dump())
+    if not updated_car:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Coche con ID {car_id} no encontrado en el catálogo.",
+        )
+    return CarFullResponse.model_validate(updated_car.model_dump())
+
+
+@router.delete(
+    "/{car_id}",
+    response_model=MessageResponse,
+    summary="Eliminar un coche del catálogo",
+    description="Elimina un coche del catálogo de forma permanente. **Requiere rol Admin.**",
+)
+async def delete_car(
+    car_id: int,
+    _admin: User = Depends(get_admin_user),
+    use_cases: CarUseCases = Depends(get_car_use_cases),
+) -> MessageResponse:
+    deleted = use_cases.delete_car(car_id)
+    if not deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Coche con ID {car_id} no encontrado en el catálogo.",
+        )
+    return MessageResponse(message=f"Coche con ID {car_id} eliminado correctamente del catálogo.")
