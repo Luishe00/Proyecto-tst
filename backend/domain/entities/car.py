@@ -16,5 +16,6 @@ class Car(BaseModel):
     velocidad_max: int = Field(..., gt=0, le=500, description="Velocidad máxima en km/h")
     precio: float = Field(..., gt=0, description="Precio en euros")
     imagen_url: str = Field(..., description="URL de la imagen del coche")
+    year: int = Field(..., gt=1885, le=2027, description="Año de fabricación del vehículo")
 
     model_config = {"from_attributes": True}

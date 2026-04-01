@@ -32,7 +32,9 @@ router = APIRouter(prefix="/cars", tags=["Catálogo de Coches"])
         "- `marca`: filtra por nombre exacto de marca (ej: `Porsche`).\n"
         "- `velocidad_max`: muestra coches con velocidad máxima **≥** al valor.\n"
         "- `cv`: muestra coches con potencia **≥** al valor indicado.\n"
-        "- `precio_min` / `precio_max`: rango de precio en euros."
+        "- `precio_min` / `precio_max`: rango de precio en euros.\n"
+        "- `year`: filtra por año de fabricación exacto.\n"
+        "- `year_min`: muestra coches fabricados desde ese año en adelante."
     ),
 )
 async def get_cars(
@@ -41,6 +43,8 @@ async def get_cars(
     cv: Annotated[Optional[int], Query(description="Caballos de vapor mínimos", ge=1)] = None,
     precio_min: Annotated[Optional[float], Query(description="Precio mínimo en euros", ge=0)] = None,
     precio_max: Annotated[Optional[float], Query(description="Precio máximo en euros", ge=0)] = None,
+    year: Annotated[Optional[int], Query(description="Año de fabricación exacto", gt=1885, le=2027)] = None,
+    year_min: Annotated[Optional[int], Query(description="Año mínimo de fabricación", gt=1885, le=2027)] = None,
     current_user: Optional[User] = Depends(get_optional_current_user),
     use_cases: CarUseCases = Depends(get_car_use_cases),
 ) -> List[Union[CarFullResponse, CarPublicResponse]]:
@@ -50,6 +54,8 @@ async def get_cars(
         cv=cv,
         precio_min=precio_min,
         precio_max=precio_max,
+        year=year,
+        year_min=year_min,
     )
     if current_user:
         return [CarFullResponse.model_validate(car.model_dump()) for car in cars]

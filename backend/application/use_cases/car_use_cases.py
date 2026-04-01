@@ -21,6 +21,8 @@ class CarUseCases:
         cv: Optional[int] = None,
         precio_min: Optional[float] = None,
         precio_max: Optional[float] = None,
+        year: Optional[int] = None,
+        year_min: Optional[int] = None,
     ) -> List[Car]:
         """
         Obtiene todos los coches aplicando filtros opcionales.
@@ -31,6 +33,8 @@ class CarUseCases:
             cv: Caballos de vapor mínimos (coches con cv >= valor).
             precio_min: Precio mínimo en euros.
             precio_max: Precio máximo en euros.
+            year: Año de fabricación exacto.
+            year_min: Año de fabricación mínimo (coches con year >= valor).
 
         Returns:
             Lista de coches que cumplen todos los filtros indicados.
@@ -47,6 +51,10 @@ class CarUseCases:
             cars = [c for c in cars if c.precio >= precio_min]
         if precio_max is not None:
             cars = [c for c in cars if c.precio <= precio_max]
+        if year is not None:
+            cars = [c for c in cars if c.year == year]
+        if year_min is not None:
+            cars = [c for c in cars if c.year >= year_min]
 
         return cars
 

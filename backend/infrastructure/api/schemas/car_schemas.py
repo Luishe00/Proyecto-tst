@@ -2,9 +2,10 @@
 Esquemas Pydantic para los endpoints de coches.
 Define los modelos de request/response para la API REST.
 """
+from datetime import date
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class CarPublicResponse(BaseModel):
@@ -35,6 +36,15 @@ class CarFullResponse(BaseModel):
     velocidad_max: int = Field(..., description="Velocidad máxima en km/h")
     precio: float = Field(..., description="Precio en euros")
     imagen_url: str
+    year: int = Field(..., gt=1885, le=2027, description="Año de fabricación")
+
+    @field_validator("year")
+    @classmethod
+    def year_not_future(cls, v: int) -> int:
+        max_year = date.today().year + 1
+        if v > max_year:
+            raise ValueError(f"El año no puede ser superior a {max_year}")
+        return v
 
     model_config = {"from_attributes": True}
 
@@ -49,6 +59,15 @@ class CarCreate(BaseModel):
     velocidad_max: int = Field(..., gt=0, le=500, description="Velocidad máxima en km/h", examples=[340])
     precio: float = Field(..., gt=0, description="Precio en euros", examples=[507000])
     imagen_url: str = Field(..., description="URL de la imagen del coche", examples=["https://example.com/car.jpg"])
+    year: int = Field(..., gt=1885, le=2027, description="Año de fabricación", examples=[2022])
+
+    @field_validator("year")
+    @classmethod
+    def year_not_future(cls, v: int) -> int:
+        max_year = date.today().year + 1
+        if v > max_year:
+            raise ValueError(f"El año no puede ser superior a {max_year}")
+        return v
 
 
 class CarUpdate(BaseModel):
@@ -61,3 +80,14 @@ class CarUpdate(BaseModel):
     velocidad_max: Optional[int] = Field(default=None, gt=0, le=500)
     precio: Optional[float] = Field(default=None, gt=0)
     imagen_url: Optional[str] = Field(default=None)
+    year: Optional[int] = Field(default=None, gt=1885, le=2027, description="Año de fabricación")
+
+    @field_validator("year")
+    @classmethod
+    def year_not_future(cls, v: Optional[int]) -> Optional[int]:
+        if v is None:
+            return v
+        max_year = date.today().year + 1
+        if v > max_year:
+            raise ValueError(f"El año no puede ser superior a {max_year}")
+        return v

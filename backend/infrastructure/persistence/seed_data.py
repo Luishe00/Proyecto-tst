@@ -23,6 +23,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=296,
         precio=239700,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Porsche_991_GT3_RS_2015.jpg/1280px-Porsche_991_GT3_RS_2015.jpg",
+        year=2022,
     ),
     Car(
         id=2,
@@ -33,6 +34,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=260,
         precio=185456,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Porsche_Taycan_Turbo_S_%28J1%2C_2019%29_%28cropped%29.jpg/1280px-Porsche_Taycan_Turbo_S_%28J1%2C_2019%29_%28cropped%29.jpg",
+        year=2021,
     ),
     Car(
         id=3,
@@ -43,6 +45,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=345,
         precio=845000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Porsche_918_Spyder_2013_IAA.jpg/1280px-Porsche_918_Spyder_2013_IAA.jpg",
+        year=2018,
     ),
     Car(
         id=4,
@@ -53,6 +56,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=300,
         precio=186000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/2022_Porsche_Cayenne_Turbo_GT_%28facelift%2C_grey%29%2C_front_8.4.22.jpg/1280px-2022_Porsche_Cayenne_Turbo_GT_%28facelift%2C_grey%29%2C_front_8.4.22.jpg",
+        year=2022,
     ),
     Car(
         id=5,
@@ -63,6 +67,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=315,
         precio=188600,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Porsche_Panamera_Turbo_S_E-Hybrid_Sport_Turismo_%28971%2C_facelift_2020%29_–_f_31102020.jpg/1280px-Porsche_Panamera_Turbo_S_E-Hybrid_Sport_Turismo_%28971%2C_facelift_2020%29_–_f_31102020.jpg",
+        year=2021,
     ),
     # ── Ferrari ──────────────────────────────────────────────────────────────
     Car(
@@ -74,6 +79,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=340,
         precio=507000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Ferrari_SF90_Stradale_%28cropped%29.jpg/1280px-Ferrari_SF90_Stradale_%28cropped%29.jpg",
+        year=2020,
     ),
     Car(
         id=7,
@@ -84,6 +90,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=340,
         precio=280000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Ferrari_488_Pista_%28cropped%29.jpg/1280px-Ferrari_488_Pista_%28cropped%29.jpg",
+        year=2018,
     ),
     Car(
         id=8,
@@ -94,6 +101,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=350,
         precio=1300000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/LaFerrari_-_2014_Paris_Motor_Show.jpg/1280px-LaFerrari_-_2014_Paris_Motor_Show.jpg",
+        year=2018,
     ),
     Car(
         id=9,
@@ -104,6 +112,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=340,
         precio=276000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Ferrari_F8_Tributo%2C_2019_Geneva_Motor_Show.jpg/1280px-Ferrari_F8_Tributo%2C_2019_Geneva_Motor_Show.jpg",
+        year=2020,
     ),
     Car(
         id=10,
@@ -114,6 +123,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=320,
         precio=222000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Ferrari_Roma_at_2019_LA_Auto_Show_%28cropped%29.jpg/1280px-Ferrari_Roma_at_2019_LA_Auto_Show_%28cropped%29.jpg",
+        year=2021,
     ),
     # ── Lamborghini ───────────────────────────────────────────────────────────
     Car(
@@ -125,6 +135,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=350,
         precio=420000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lamborghini_Aventador_SVJ_%28cropped%29.jpg/1280px-Lamborghini_Aventador_SVJ_%28cropped%29.jpg",
+        year=2019,
     ),
     Car(
         id=12,
@@ -135,6 +146,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=325,
         precio=212000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/2020_Lamborghini_Huracan_EVO%2C_front_8.12.19.jpg/1280px-2020_Lamborghini_Huracan_EVO%2C_front_8.12.19.jpg",
+        year=2020,
     ),
     Car(
         id=13,
@@ -145,6 +157,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=306,
         precio=275000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Lamborghini_Urus_Performante%2C_2022_Goodwood_Festival_of_Speed.jpg/1280px-Lamborghini_Urus_Performante%2C_2022_Goodwood_Festival_of_Speed.jpg",
+        year=2022,
     ),
     Car(
         id=14,
@@ -155,6 +168,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=350,
         precio=3300000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Lamborghini_Sian_FKP37%2C_2019_IAA.jpg/1280px-Lamborghini_Sian_FKP37%2C_2019_IAA.jpg",
+        year=2020,
     ),
     Car(
         id=15,
@@ -165,6 +179,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=350,
         precio=517000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Lamborghini_Revuelto_at_2023_Geneva_Motorshow.jpg/1280px-Lamborghini_Revuelto_at_2023_Geneva_Motorshow.jpg",
+        year=2023,
     ),
     # ── Aston Martin ─────────────────────────────────────────────────────────
     Car(
@@ -176,6 +191,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=340,
         precio=265000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Aston_Martin_DBS_Superleggera%2C_2018_Goodwood_Festival_of_Speed.jpg/1280px-Aston_Martin_DBS_Superleggera%2C_2018_Goodwood_Festival_of_Speed.jpg",
+        year=2018,
     ),
     Car(
         id=17,
@@ -186,6 +202,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=330,
         precio=190000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Aston_Martin_V12_Vantage_S_at_Goodwood_2014_%28Ank_Kumar%29_02.jpg/1280px-Aston_Martin_V12_Vantage_S_at_Goodwood_2014_%28Ank_Kumar%29_02.jpg",
+        year=2022,
     ),
     Car(
         id=18,
@@ -196,6 +213,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=402,
         precio=3200000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Aston_Martin_Valkyrie_%28cropped%29.jpg/1280px-Aston_Martin_Valkyrie_%28cropped%29.jpg",
+        year=2021,
     ),
     Car(
         id=19,
@@ -206,6 +224,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=335,
         precio=220000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Aston_Martin_DB11_AMR_at_the_2018_Geneva_Motor_Show.jpg/1280px-Aston_Martin_DB11_AMR_at_the_2018_Geneva_Motor_Show.jpg",
+        year=2019,
     ),
     Car(
         id=20,
@@ -216,6 +235,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=362,
         precio=2300000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Aston_Martin_Vulcan%2C_2015_Goodwood_Festival_of_Speed.jpg/1280px-Aston_Martin_Vulcan%2C_2015_Goodwood_Festival_of_Speed.jpg",
+        year=2018,
     ),
     # ── McLaren ───────────────────────────────────────────────────────────────
     Car(
@@ -227,6 +247,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=350,
         precio=1150000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/McLaren_P1_%28cropped%29.jpg/1280px-McLaren_P1_%28cropped%29.jpg",
+        year=2018,
     ),
     Car(
         id=22,
@@ -237,6 +258,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=340,
         precio=750000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/McLaren_Senna_at_the_2018_Goodwood_Festival_of_Speed.jpg/1280px-McLaren_Senna_at_the_2018_Goodwood_Festival_of_Speed.jpg",
+        year=2019,
     ),
     Car(
         id=23,
@@ -247,6 +269,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=341,
         precio=235000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/2019_McLaren_720S_Performance_coupe%2C_front_8.13.19.jpg/1280px-2019_McLaren_720S_Performance_coupe%2C_front_8.13.19.jpg",
+        year=2021,
     ),
     Car(
         id=24,
@@ -257,6 +280,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=330,
         precio=225000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/McLaren_Artura_IAA_2021_%281%29.jpg/1280px-McLaren_Artura_IAA_2021_%281%29.jpg",
+        year=2022,
     ),
     Car(
         id=25,
@@ -267,6 +291,7 @@ SEED_CARS: list[Car] = [
         velocidad_max=403,
         precio=2100000,
         imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/McLaren_Speedtail_at_Goodwood_Festival_of_Speed_2019.jpg/1280px-McLaren_Speedtail_at_Goodwood_Festival_of_Speed_2019.jpg",
+        year=2020,
     ),
 ]
 
