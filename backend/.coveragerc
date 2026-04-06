@@ -1,0 +1,5 @@
+[run]
+omit =
+    main.py
+    infrastructure/api/main.py
+    infrastructure/persistence/seed_data.py
