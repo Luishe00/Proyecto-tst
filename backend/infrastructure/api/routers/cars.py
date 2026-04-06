@@ -4,14 +4,13 @@ Expone endpoints CRUD con distintos niveles de acceso según el rol del usuario.
 """
 from typing import Annotated, List, Optional, Union
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Form, HTTPException, Query, UploadFile, status
 
 from application.use_cases.car_use_cases import CarUseCases
 from domain.entities.user import User
 from infrastructure.api.container import get_car_use_cases
 from infrastructure.api.dependencies import get_admin_user, get_current_user, get_optional_current_user
 from infrastructure.api.schemas.car_schemas import (
-    CarCreate,
     CarFullResponse,
     CarPublicResponse,
     CarUpdate,
@@ -87,14 +86,45 @@ async def get_car(
     response_model=CarFullResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Añadir un coche al catálogo",
-    description="Crea un nuevo coche en el catálogo. **Requiere rol Admin.**",
+    description="Crea un nuevo coche en el catálogo. Acepta `multipart/form-data` con campos del coche e imagen opcional. **Requiere rol Admin.**",
 )
 async def create_car(
-    car_data: CarCreate,
+    marca: Annotated[str, Form(min_length=2, max_length=50, description="Marca del fabricante")],
+    modelo: Annotated[str, Form(min_length=1, max_length=100, description="Nombre del modelo")],
+    cv: Annotated[int, Form(gt=0, le=2000, description="Potencia en caballos de vapor")],
+    peso: Annotated[int, Form(gt=0, le=5000, description="Peso en kg")],
+    velocidad_max: Annotated[int, Form(gt=0, le=500, description="Velocidad máxima en km/h")],
+    precio: Annotated[float, Form(gt=0, description="Precio en euros")],
+    year: Annotated[int, Form(gt=1885, le=2027, description="Año de fabricación")],
+    imagen_url: Annotated[Optional[str], Form(description="URL de la imagen (si no se sube archivo)")] = None,
+    imagen: Optional[UploadFile] = None,
     _admin: User = Depends(get_admin_user),
     use_cases: CarUseCases = Depends(get_car_use_cases),
 ) -> CarFullResponse:
-    new_car = use_cases.create_car(car_data.model_dump())
+    car_data = {
+        "marca": marca,
+        "modelo": modelo,
+        "cv": cv,
+        "peso": peso,
+        "velocidad_max": velocidad_max,
+        "precio": precio,
+        "year": year,
+        "imagen_url": imagen_url or "",
+    }
+
+    image_file: Optional[bytes] = None
+    image_filename: Optional[str] = None
+    if imagen and imagen.filename:
+        image_file = await imagen.read()
+        image_filename = f"{marca.lower().replace(' ', '_')}_{modelo.lower().replace(' ', '_')}"
+
+    if not image_file and not imagen_url:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Debes proporcionar una imagen (archivo) o una imagen_url.",
+        )
+
+    new_car = use_cases.create_car(car_data, image_file=image_file, image_filename=image_filename)
     return CarFullResponse.model_validate(new_car.model_dump())
 
 

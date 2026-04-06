@@ -2,10 +2,16 @@
 Datos de seed para inicializar el sistema con coches premium y usuarios de prueba.
 Incluye 25 coches reales (5 por cada marca premium) y 2 usuarios (admin y user).
 """
+import asyncio
+import logging
+
+import httpx
 from passlib.context import CryptContext
 
 from domain.entities.car import Car
 from domain.entities.user import Role, User
+
+logger = logging.getLogger(__name__)
 
 _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -22,7 +28,7 @@ SEED_CARS: list[Car] = [
         peso=1450,
         velocidad_max=296,
         precio=239700,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Porsche_991_GT3_RS_2015.jpg/1280px-Porsche_991_GT3_RS_2015.jpg",
+        imagen_url="https://placehold.jp/24/003366/ffffff/1280x720.png?text=Porsche_911_GT3_RS",
         year=2022,
     ),
     Car(
@@ -33,7 +39,7 @@ SEED_CARS: list[Car] = [
         peso=2370,
         velocidad_max=260,
         precio=185456,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Porsche_Taycan_Turbo_S_%28J1%2C_2019%29_%28cropped%29.jpg/1280px-Porsche_Taycan_Turbo_S_%28J1%2C_2019%29_%28cropped%29.jpg",
+        imagen_url="https://placehold.jp/24/003366/ffffff/1280x720.png?text=Porsche_Taycan_Turbo_S",
         year=2021,
     ),
     Car(
@@ -44,7 +50,7 @@ SEED_CARS: list[Car] = [
         peso=1674,
         velocidad_max=345,
         precio=845000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Porsche_918_Spyder_2013_IAA.jpg/1280px-Porsche_918_Spyder_2013_IAA.jpg",
+        imagen_url="https://placehold.jp/24/003366/ffffff/1280x720.png?text=Porsche_918_Spyder",
         year=2018,
     ),
     Car(
@@ -55,7 +61,7 @@ SEED_CARS: list[Car] = [
         peso=2195,
         velocidad_max=300,
         precio=186000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/2022_Porsche_Cayenne_Turbo_GT_%28facelift%2C_grey%29%2C_front_8.4.22.jpg/1280px-2022_Porsche_Cayenne_Turbo_GT_%28facelift%2C_grey%29%2C_front_8.4.22.jpg",
+        imagen_url="https://placehold.jp/24/003366/ffffff/1280x720.png?text=Porsche_Cayenne_Turbo_GT",
         year=2022,
     ),
     Car(
@@ -66,7 +72,7 @@ SEED_CARS: list[Car] = [
         peso=2220,
         velocidad_max=315,
         precio=188600,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Porsche_Panamera_Turbo_S_E-Hybrid_Sport_Turismo_%28971%2C_facelift_2020%29_–_f_31102020.jpg/1280px-Porsche_Panamera_Turbo_S_E-Hybrid_Sport_Turismo_%28971%2C_facelift_2020%29_–_f_31102020.jpg",
+        imagen_url="https://placehold.jp/24/003366/ffffff/1280x720.png?text=Porsche_Panamera_Turbo_S",
         year=2021,
     ),
     # ── Ferrari ──────────────────────────────────────────────────────────────
@@ -78,7 +84,7 @@ SEED_CARS: list[Car] = [
         peso=1570,
         velocidad_max=340,
         precio=507000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Ferrari_SF90_Stradale_%28cropped%29.jpg/1280px-Ferrari_SF90_Stradale_%28cropped%29.jpg",
+        imagen_url="https://placehold.jp/24/cc0000/ffffff/1280x720.png?text=Ferrari_SF90_Stradale",
         year=2020,
     ),
     Car(
@@ -89,7 +95,7 @@ SEED_CARS: list[Car] = [
         peso=1385,
         velocidad_max=340,
         precio=280000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Ferrari_488_Pista_%28cropped%29.jpg/1280px-Ferrari_488_Pista_%28cropped%29.jpg",
+        imagen_url="https://placehold.jp/24/cc0000/ffffff/1280x720.png?text=Ferrari_488_Pista",
         year=2018,
     ),
     Car(
@@ -100,7 +106,7 @@ SEED_CARS: list[Car] = [
         peso=1255,
         velocidad_max=350,
         precio=1300000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/LaFerrari_-_2014_Paris_Motor_Show.jpg/1280px-LaFerrari_-_2014_Paris_Motor_Show.jpg",
+        imagen_url="https://placehold.jp/24/cc0000/ffffff/1280x720.png?text=Ferrari_LaFerrari",
         year=2018,
     ),
     Car(
@@ -111,7 +117,7 @@ SEED_CARS: list[Car] = [
         peso=1330,
         velocidad_max=340,
         precio=276000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Ferrari_F8_Tributo%2C_2019_Geneva_Motor_Show.jpg/1280px-Ferrari_F8_Tributo%2C_2019_Geneva_Motor_Show.jpg",
+        imagen_url="https://placehold.jp/24/cc0000/ffffff/1280x720.png?text=Ferrari_F8_Tributo",
         year=2020,
     ),
     Car(
@@ -122,7 +128,7 @@ SEED_CARS: list[Car] = [
         peso=1472,
         velocidad_max=320,
         precio=222000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Ferrari_Roma_at_2019_LA_Auto_Show_%28cropped%29.jpg/1280px-Ferrari_Roma_at_2019_LA_Auto_Show_%28cropped%29.jpg",
+        imagen_url="https://placehold.jp/24/cc0000/ffffff/1280x720.png?text=Ferrari_Roma",
         year=2021,
     ),
     # ── Lamborghini ───────────────────────────────────────────────────────────
@@ -134,7 +140,7 @@ SEED_CARS: list[Car] = [
         peso=1525,
         velocidad_max=350,
         precio=420000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lamborghini_Aventador_SVJ_%28cropped%29.jpg/1280px-Lamborghini_Aventador_SVJ_%28cropped%29.jpg",
+        imagen_url="https://placehold.jp/24/ff6600/ffffff/1280x720.png?text=Lamborghini_Aventador_SVJ",
         year=2019,
     ),
     Car(
@@ -145,7 +151,7 @@ SEED_CARS: list[Car] = [
         peso=1422,
         velocidad_max=325,
         precio=212000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/2020_Lamborghini_Huracan_EVO%2C_front_8.12.19.jpg/1280px-2020_Lamborghini_Huracan_EVO%2C_front_8.12.19.jpg",
+        imagen_url="https://placehold.jp/24/ff6600/ffffff/1280x720.png?text=Lamborghini_Huracan_EVO",
         year=2020,
     ),
     Car(
@@ -156,7 +162,7 @@ SEED_CARS: list[Car] = [
         peso=2150,
         velocidad_max=306,
         precio=275000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Lamborghini_Urus_Performante%2C_2022_Goodwood_Festival_of_Speed.jpg/1280px-Lamborghini_Urus_Performante%2C_2022_Goodwood_Festival_of_Speed.jpg",
+        imagen_url="https://placehold.jp/24/ff6600/ffffff/1280x720.png?text=Lamborghini_Urus_Performante",
         year=2022,
     ),
     Car(
@@ -167,7 +173,7 @@ SEED_CARS: list[Car] = [
         peso=1595,
         velocidad_max=350,
         precio=3300000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Lamborghini_Sian_FKP37%2C_2019_IAA.jpg/1280px-Lamborghini_Sian_FKP37%2C_2019_IAA.jpg",
+        imagen_url="https://placehold.jp/24/ff6600/ffffff/1280x720.png?text=Lamborghini_Sian_FKP_37",
         year=2020,
     ),
     Car(
@@ -178,7 +184,7 @@ SEED_CARS: list[Car] = [
         peso=1772,
         velocidad_max=350,
         precio=517000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Lamborghini_Revuelto_at_2023_Geneva_Motorshow.jpg/1280px-Lamborghini_Revuelto_at_2023_Geneva_Motorshow.jpg",
+        imagen_url="https://placehold.jp/24/ff6600/ffffff/1280x720.png?text=Lamborghini_Revuelto",
         year=2023,
     ),
     # ── Aston Martin ─────────────────────────────────────────────────────────
@@ -190,7 +196,7 @@ SEED_CARS: list[Car] = [
         peso=1693,
         velocidad_max=340,
         precio=265000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Aston_Martin_DBS_Superleggera%2C_2018_Goodwood_Festival_of_Speed.jpg/1280px-Aston_Martin_DBS_Superleggera%2C_2018_Goodwood_Festival_of_Speed.jpg",
+        imagen_url="https://placehold.jp/24/004d40/ffffff/1280x720.png?text=AstonMartin_DBS_Superleggera",
         year=2018,
     ),
     Car(
@@ -201,7 +207,7 @@ SEED_CARS: list[Car] = [
         peso=1530,
         velocidad_max=330,
         precio=190000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Aston_Martin_V12_Vantage_S_at_Goodwood_2014_%28Ank_Kumar%29_02.jpg/1280px-Aston_Martin_V12_Vantage_S_at_Goodwood_2014_%28Ank_Kumar%29_02.jpg",
+        imagen_url="https://placehold.jp/24/004d40/ffffff/1280x720.png?text=AstonMartin_Vantage_V12",
         year=2022,
     ),
     Car(
@@ -212,7 +218,7 @@ SEED_CARS: list[Car] = [
         peso=1000,
         velocidad_max=402,
         precio=3200000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Aston_Martin_Valkyrie_%28cropped%29.jpg/1280px-Aston_Martin_Valkyrie_%28cropped%29.jpg",
+        imagen_url="https://placehold.jp/24/004d40/ffffff/1280x720.png?text=AstonMartin_Valkyrie",
         year=2021,
     ),
     Car(
@@ -223,7 +229,7 @@ SEED_CARS: list[Car] = [
         peso=1760,
         velocidad_max=335,
         precio=220000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Aston_Martin_DB11_AMR_at_the_2018_Geneva_Motor_Show.jpg/1280px-Aston_Martin_DB11_AMR_at_the_2018_Geneva_Motor_Show.jpg",
+        imagen_url="https://placehold.jp/24/004d40/ffffff/1280x720.png?text=AstonMartin_DB11_AMR",
         year=2019,
     ),
     Car(
@@ -234,7 +240,7 @@ SEED_CARS: list[Car] = [
         peso=1350,
         velocidad_max=362,
         precio=2300000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Aston_Martin_Vulcan%2C_2015_Goodwood_Festival_of_Speed.jpg/1280px-Aston_Martin_Vulcan%2C_2015_Goodwood_Festival_of_Speed.jpg",
+        imagen_url="https://placehold.jp/24/004d40/ffffff/1280x720.png?text=AstonMartin_Vulcan",
         year=2018,
     ),
     # ── McLaren ───────────────────────────────────────────────────────────────
@@ -246,7 +252,7 @@ SEED_CARS: list[Car] = [
         peso=1395,
         velocidad_max=350,
         precio=1150000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/McLaren_P1_%28cropped%29.jpg/1280px-McLaren_P1_%28cropped%29.jpg",
+        imagen_url="https://placehold.jp/24/e65100/ffffff/1280x720.png?text=McLaren_P1",
         year=2018,
     ),
     Car(
@@ -257,7 +263,7 @@ SEED_CARS: list[Car] = [
         peso=1198,
         velocidad_max=340,
         precio=750000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/McLaren_Senna_at_the_2018_Goodwood_Festival_of_Speed.jpg/1280px-McLaren_Senna_at_the_2018_Goodwood_Festival_of_Speed.jpg",
+        imagen_url="https://placehold.jp/24/e65100/ffffff/1280x720.png?text=McLaren_Senna",
         year=2019,
     ),
     Car(
@@ -268,7 +274,7 @@ SEED_CARS: list[Car] = [
         peso=1283,
         velocidad_max=341,
         precio=235000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/2019_McLaren_720S_Performance_coupe%2C_front_8.13.19.jpg/1280px-2019_McLaren_720S_Performance_coupe%2C_front_8.13.19.jpg",
+        imagen_url="https://placehold.jp/24/e65100/ffffff/1280x720.png?text=McLaren_720S",
         year=2021,
     ),
     Car(
@@ -279,7 +285,7 @@ SEED_CARS: list[Car] = [
         peso=1395,
         velocidad_max=330,
         precio=225000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/McLaren_Artura_IAA_2021_%281%29.jpg/1280px-McLaren_Artura_IAA_2021_%281%29.jpg",
+        imagen_url="https://placehold.jp/24/e65100/ffffff/1280x720.png?text=McLaren_Artura",
         year=2022,
     ),
     Car(
@@ -290,7 +296,7 @@ SEED_CARS: list[Car] = [
         peso=1430,
         velocidad_max=403,
         precio=2100000,
-        imagen_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/McLaren_Speedtail_at_Goodwood_Festival_of_Speed_2019.jpg/1280px-McLaren_Speedtail_at_Goodwood_Festival_of_Speed_2019.jpg",
+        imagen_url="https://placehold.jp/24/e65100/ffffff/1280x720.png?text=McLaren_Speedtail",
         year=2020,
     ),
 ]
@@ -314,3 +320,79 @@ SEED_USERS: list[User] = [
         is_active=True,
     ),
 ]
+
+
+# ---------------------------------------------------------------------------
+# Migración de imágenes a Cloudinary
+# ---------------------------------------------------------------------------
+
+async def migrate_seed_images(car_repository) -> None:
+    """
+    Recorre los 25 coches del seed y asegura que cada uno tiene su imagen en Cloudinary.
+
+    Lógica inteligente por arranque:
+    - Si el public_id YA EXISTE en Cloudinary: recupera la URL y actualiza el Car (sin subir).
+    - Si NO EXISTE: descarga el placeholder y lo sube a Cloudinary.
+
+    Primera ejecución: sube los 25. Arranques posteriores: termina en < 1 segundo.
+    """
+    from infrastructure.adapters.cloudinary_adapter import CloudinaryAdapter
+
+    adapter = CloudinaryAdapter()
+    ok_count = 0
+    fail_count = 0
+
+    print("─" * 60)
+    print("  Iniciando migración de imágenes a Cloudinary...")
+    print("─" * 60)
+
+    skip_count = 0
+
+    async with httpx.AsyncClient(
+        timeout=30,
+        follow_redirects=True,
+        headers={"User-Agent": "PremiumCarCatalog/1.0 (educational project)"},
+    ) as client:
+        for car in SEED_CARS:
+            label = f"[{car.id:02d}] {car.marca} {car.modelo}"
+
+            public_id = (
+                f"car_{car.id}_{car.marca.lower().replace(' ', '_')}"
+                f"_{car.modelo.lower().replace(' ', '_')}"
+            )
+
+            try:
+                # ── 1. Comprobar si ya existe en Cloudinary ──────────────────
+                existing_url = await asyncio.to_thread(
+                    adapter.get_existing_url, public_id
+                )
+                if existing_url:
+                    car_repository.update(car.id, {"imagen_url": existing_url})
+                    skip_count += 1
+                    print(f"  [IGNORADO] {car.marca} {car.modelo} ya existe en Cloudinary")
+                    logger.info("Imagen coche %d ya existe en Cloudinary, omitida", car.id)
+                    continue
+
+                # ── 2. No existe: descargar placeholder y subir ──────────────
+                response = await client.get(car.imagen_url)
+                response.raise_for_status()
+
+                new_url = await asyncio.to_thread(
+                    adapter.upload_image,
+                    response.content,
+                    public_id,
+                )
+
+                car_repository.update(car.id, {"imagen_url": new_url})
+                ok_count += 1
+                print(f"  [SUBIDO] {car.marca} {car.modelo} enviado a Cloudinary")
+                logger.info("Migrada imagen coche %d -> %s", car.id, new_url)
+
+            except Exception as exc:  # noqa: BLE001
+                fail_count += 1
+                print(f"  ❌ ERROR {label}: {exc}")
+                logger.warning("No se pudo migrar imagen coche %d: %s", car.id, exc)
+
+    print("─" * 60)
+    print(f"  Migración completada: {ok_count} [SUBIDO]  |  {skip_count} [IGNORADO]  |  {fail_count} ❌")
+    print("─" * 60)

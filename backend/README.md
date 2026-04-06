@@ -29,6 +29,8 @@ API REST profesional desarrollada con **FastAPI** para gestionar un catálogo de
 - ✅ **Validación con Pydantic v2**
 - ✅ **Filtrado dinámico** del catálogo por marca, CV, velocidad y precio
 - ✅ **Sistema de Favoritos** por usuario
+- ✅ **Integración con Cloudinary** para almacenar imágenes del catálogo
+- ✅ **Migración automática de placeholders a Cloudinary** en el arranque
 - ✅ **Swagger UI** interactivo en `/docs`
 - ✅ **Type Hinting** en todo el proyecto
 
@@ -62,7 +64,7 @@ El proyecto aplica el patrón **Ports & Adapters** dividiendo el código en tres
 |------|---------|-----------------|
 | **Domain** | `domain/` | Entidades del negocio (`Car`, `User`, `Favorite`) e interfaces abstractas (puertos) |
 | **Application** | `application/` | Lógica de negocio pura: casos de uso que orquestan entidades y puertos |
-| **Infrastructure** | `infrastructure/` | Adaptadores concretos: FastAPI, JWT, repositorios en memoria |
+| **Infrastructure** | `infrastructure/` | Adaptadores concretos: FastAPI, JWT, Cloudinary y repositorios en memoria |
 
 **Regla de dependencia:** Las capas internas no conocen las externas. El dominio no importa nada de application ni infrastructure. Los casos de uso solo dependen de los puertos (interfaces), nunca de implementaciones concretas.
 
@@ -75,6 +77,7 @@ backend/
 ├── main.py                          # Punto de entrada (uvicorn)
 ├── requirements.txt
 ├── README.md
+├── .env                             # Credenciales de Cloudinary (local)
 │
 ├── domain/                          # Capa de Dominio
 │   ├── entities/
@@ -84,7 +87,8 @@ backend/
 │   └── ports/
 │       ├── car_repository.py        # Puerto: interfaz CarRepository
 │       ├── user_repository.py       # Puerto: interfaz UserRepository
-│       └── favorite_repository.py   # Puerto: interfaz FavoriteRepository
+│       ├── favorite_repository.py   # Puerto: interfaz FavoriteRepository
+│       └── image_storage.py         # Puerto: interfaz ImageStorage
 │
 ├── application/                     # Capa de Aplicación
 │   └── use_cases/
@@ -93,10 +97,12 @@ backend/
 │       └── favorite_use_cases.py    # Gestión de favoritos
 │
 └── infrastructure/                  # Capa de Infraestructura
+  ├── adapters/
+  │   └── cloudinary_adapter.py    # Adaptador Cloudinary
     ├── auth/
     │   └── jwt_handler.py           # Creación/verificación de tokens JWT
     ├── persistence/
-    │   ├── seed_data.py             # 25 coches + 2 usuarios precargados
+  │   ├── seed_data.py             # 25 coches + 2 usuarios + migración de imágenes
     │   ├── in_memory_car_repository.py
     │   ├── in_memory_user_repository.py
     │   └── in_memory_favorite_repository.py
@@ -122,8 +128,8 @@ backend/
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/premium-car-catalog.git
-cd premium-car-catalog/backend
+git clone https://github.com/Luishe00/Proyecto-tst.git
+cd Proyecto-tst/backend
 
 # 2. Crear y activar el entorno virtual
 python -m venv venv
@@ -136,24 +142,42 @@ source venv/bin/activate
 
 # 3. Instalar dependencias
 pip install -r requirements.txt
+
+# 4. Crear archivo .env
+```
+
+Archivo `.env` mínimo:
+
+```env
+CLOUDINARY_CLOUD_NAME=tu_cloud_name
+CLOUDINARY_API_KEY=tu_api_key
+CLOUDINARY_API_SECRET=tu_api_secret
 ```
 
 ### Opción B — Anaconda / Miniconda
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/premium-car-catalog.git
-cd premium-car-catalog/backend
+git clone https://github.com/Luishe00/Proyecto-tst.git
+cd Proyecto-tst/backend
 
 # 2. Crear el entorno conda
-conda create -n premium-cars python=3.11 -y
+conda create -n premium-cars python=3.13 -y
 
 # 3. Activar el entorno
 conda activate premium-cars
 
 # 4. Instalar dependencias 
 pip install -r requirements.txt
+
+# 5. Crear archivo .env
 ```
+
+## Notas de configuración
+
+- El proyecto está probado con **Python 3.13.9**.
+- Si faltan credenciales de Cloudinary, la API puede arrancar, pero la migración de imágenes del seed y la subida de nuevas imágenes no funcionarán correctamente.
+- En el arranque, la aplicación intenta asegurar que las 25 imágenes del seed existan en Cloudinary. Si ya existen, se reutilizan y se omite la subida.
 
 ---
 
@@ -176,6 +200,11 @@ La API estará disponible en:
 - **API Base:** `http://localhost:8000`
 - **Swagger UI:** `http://localhost:8000/docs`
 - **ReDoc:** `http://localhost:8000/redoc`
+
+Durante el arranque verás mensajes de migración de imágenes a Cloudinary:
+
+- `[SUBIDO]` cuando una imagen placeholder se sube por primera vez.
+- `[IGNORADO]` cuando esa imagen ya existe en Cloudinary y solo se reutiliza la URL.
 
 ---
 
@@ -219,11 +248,29 @@ curl "http://localhost:8000/cars" \
 curl "http://localhost:8000/cars/1" \
   -H "Authorization: Bearer <TOKEN>"
 
-# Crear coche (requiere Admin)
+# Crear coche con imagen remota (requiere Admin)
 curl -X POST "http://localhost:8000/cars" \
   -H "Authorization: Bearer <TOKEN_ADMIN>" \
-  -H "Content-Type: application/json" \
-  -d '{"marca":"Bugatti","modelo":"Chiron","cv":1500,"peso":1995,"velocidad_max":420,"precio":3200000,"imagen_url":"https://example.com/chiron.jpg"}'
+  -F "marca=Bugatti" \
+  -F "modelo=Chiron" \
+  -F "cv=1500" \
+  -F "peso=1995" \
+  -F "velocidad_max=420" \
+  -F "precio=3200000" \
+  -F "year=2024" \
+  -F "imagen_url=https://example.com/chiron.jpg"
+
+# Crear coche subiendo archivo (requiere Admin)
+curl -X POST "http://localhost:8000/cars" \
+  -H "Authorization: Bearer <TOKEN_ADMIN>" \
+  -F "marca=Bugatti" \
+  -F "modelo=Chiron" \
+  -F "cv=1500" \
+  -F "peso=1995" \
+  -F "velocidad_max=420" \
+  -F "precio=3200000" \
+  -F "year=2024" \
+  -F "imagen=@./chiron.jpg"
 
 # Actualizar coche (requiere Admin)
 curl -X PUT "http://localhost:8000/cars/1" \
@@ -256,16 +303,22 @@ curl -X DELETE "http://localhost:8000/me/favorites/6" \
 
 ## Niveles de Acceso
 
-| Endpoint | Anónimo | Usuario | Admin |
-|----------|---------|---------|-------|
-| `GET /cars` | ✅ (limitado) | ✅ (completo) | ✅ |
-| `GET /cars/{id}` | ❌ | ✅ | ✅ |
-| `POST /cars` | ❌ | ❌ | ✅ |
-| `PUT /cars/{id}` | ❌ | ❌ | ✅ |
-| `DELETE /cars/{id}` | ❌ | ❌ | ✅ |
-| `GET /me/favorites` | ❌ | ✅ | ✅ |
-| `POST /me/favorites/{id}` | ❌ | ✅ | ✅ |
-| `DELETE /me/favorites/{id}` | ❌ | ✅ | ✅ |
+| Endpoint | Qué hace | Anónimo | Usuario | Admin |
+|-----------|-----------|----------|----------|-------|
+| `GET /cars` | Lista el catálogo de coches | ✅ Parcial | ✅ Completo | ✅ Completo |
+| `GET /cars/{id}` | Devuelve la ficha técnica completa de un coche | ❌ No | ✅ Sí | ✅ Sí |
+| `POST /cars` | Crea un coche nuevo en el catálogo | ❌ No | ❌ No | ✅ Sí |
+| `PUT /cars/{id}` | Actualiza un coche existente | ❌ No | ❌ No | ✅ Sí |
+| `DELETE /cars/{id}` | Elimina un coche del catálogo | ❌ No | ❌ No | ✅ Sí |
+| `GET /me/favorites` | Lista los favoritos del usuario autenticado | ❌ No | ✅ Sí | ✅ Sí |
+| `POST /me/favorites/{id}` | Añade un coche a favoritos | ❌ No | ✅ Sí | ✅ Sí |
+| `DELETE /me/favorites/{id}` | Elimina un coche de favoritos | ❌ No | ✅ Sí | ✅ Sí |
+
+**Leyenda**
+
+- **Parcial**: solo devuelve `id`, `marca`, `modelo` e `imagen_url`.
+- **Completo**: devuelve la ficha técnica completa del coche.
+- **Sí / No**: indica si el rol puede ejecutar el endpoint.
 
 ---
 
@@ -280,6 +333,8 @@ El endpoint `GET /cars` admite los siguientes parámetros de consulta:
 | `cv` | `integer` | Caballos de vapor mínimos | `?cv=700` |
 | `precio_min` | `float` | Precio mínimo en euros | `?precio_min=100000` |
 | `precio_max` | `float` | Precio máximo en euros | `?precio_max=500000` |
+| `year` | `integer` | Año de fabricación exacto | `?year=2022` |
+| `year_min` | `integer` | Año de fabricación mínimo | `?year_min=2020` |
 
 ### Ejemplos de URL con filtros
 
@@ -309,13 +364,16 @@ GET /cars?marca=McLaren&velocidad_max=340
 
 | Tecnología | Versión | Uso |
 |------------|---------|-----|
-| Python | 3.11+ | Lenguaje base |
-| FastAPI | 0.111 | Framework web |
+| Python | 3.13.9 (probado) | Lenguaje base |
+| FastAPI | 0.115.5 | Framework web |
 | Pydantic | v2 | Validación de datos |
 | python-jose | 3.3 | Tokens JWT |
 | passlib + bcrypt | 1.7 | Hash de contraseñas |
-| Uvicorn | 0.29 | Servidor ASGI |
+| Uvicorn | 0.32.1 | Servidor ASGI |
+| Cloudinary | 1.41.0 | Almacenamiento y transformación de imágenes |
+| python-dotenv | 1.0.1 | Carga de variables de entorno |
+| httpx | 0.27.2 | Descarga de imágenes y cliente HTTP |
 
 ---
 
-*Proyecto preparado para testing. Arquitectura limpia, sin dependencias externas de base de datos.*
+*Proyecto preparado para testing. Arquitectura limpia, sin base de datos externa y con persistencia principal en memoria.*

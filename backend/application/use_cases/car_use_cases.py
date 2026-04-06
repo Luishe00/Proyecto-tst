@@ -6,13 +6,15 @@ from typing import Dict, List, Optional
 
 from domain.entities.car import Car
 from domain.ports.car_repository import CarRepository
+from domain.ports.image_storage import ImageStorage
 
 
 class CarUseCases:
     """Implementa los casos de uso relacionados con el catálogo de coches."""
 
-    def __init__(self, repository: CarRepository) -> None:
+    def __init__(self, repository: CarRepository, image_storage: Optional[ImageStorage] = None) -> None:
         self._repository = repository
+        self._image_storage = image_storage
 
     def get_all_cars(
         self,
@@ -62,16 +64,20 @@ class CarUseCases:
         """Obtiene un coche por su ID."""
         return self._repository.get_by_id(car_id)
 
-    def create_car(self, car_data: Dict) -> Car:
+    def create_car(self, car_data: Dict, image_file: Optional[bytes] = None, image_filename: Optional[str] = None) -> Car:
         """
         Crea un nuevo coche en el catálogo.
 
         Args:
             car_data: Diccionario con los campos del coche (sin ID).
+            image_file: Contenido binario de la imagen (opcional).
+            image_filename: Nombre del archivo de imagen (opcional).
 
         Returns:
             El coche recién creado con su ID asignado.
         """
+        if image_file and image_filename and self._image_storage:
+            car_data["imagen_url"] = self._image_storage.upload_image(image_file, image_filename)
         new_car = Car(**car_data)
         return self._repository.create(new_car)
 

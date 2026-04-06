@@ -6,14 +6,21 @@ from typing import Dict, List, Optional
 
 from domain.entities.car import Car
 from domain.ports.car_repository import CarRepository
+from infrastructure.persistence.seed_data import SEED_CARS
 
 
 class InMemoryCarRepository(CarRepository):
     """Repositorio de coches en memoria. 100% portable, sin dependencias externas."""
 
-    def __init__(self) -> None:
+    def __init__(self, load_seed: bool = False) -> None:
         self._storage: Dict[int, Car] = {}
         self._next_id: int = 1
+        if load_seed:
+            self._seed()
+
+    def _seed(self) -> None:
+        for car in SEED_CARS:
+            self.create(car)
 
     def get_all(self) -> List[Car]:
         """Devuelve todos los coches almacenados."""

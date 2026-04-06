@@ -6,6 +6,7 @@ e inyecta el seed data al arrancar la aplicación.
 from application.use_cases.auth_use_cases import AuthUseCases
 from application.use_cases.car_use_cases import CarUseCases
 from application.use_cases.favorite_use_cases import FavoriteUseCases
+from infrastructure.adapters.cloudinary_adapter import CloudinaryAdapter
 from infrastructure.auth.jwt_handler import JWTHandler
 from infrastructure.persistence.in_memory_car_repository import InMemoryCarRepository
 from infrastructure.persistence.in_memory_favorite_repository import InMemoryFavoriteRepository
@@ -17,6 +18,7 @@ _car_repository = InMemoryCarRepository()
 _user_repository = InMemoryUserRepository()
 _favorite_repository = InMemoryFavoriteRepository()
 _jwt_handler = JWTHandler()
+_cloudinary_adapter = CloudinaryAdapter()
 
 # ── Carga del seed data al iniciar ───────────────────────────────────────────
 for _car in SEED_CARS:
@@ -30,7 +32,12 @@ for _user in SEED_USERS:
 
 def get_car_use_cases() -> CarUseCases:
     """Devuelve la instancia singleton de CarUseCases."""
-    return CarUseCases(repository=_car_repository)
+    return CarUseCases(repository=_car_repository, image_storage=_cloudinary_adapter)
+
+
+def get_car_repository() -> InMemoryCarRepository:
+    """Devuelve el repositorio de coches (usado para la migración de imágenes)."""
+    return _car_repository
 
 
 def get_auth_use_cases() -> AuthUseCases:

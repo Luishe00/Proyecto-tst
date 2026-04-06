@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from infrastructure.api.routers import auth, cars, favorites
+from infrastructure.api.container import get_car_repository
 
 # ---------------------------------------------------------------------------
 # Instancia de la aplicación FastAPI con metadata para Swagger UI
@@ -74,6 +75,22 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(cars.router)
 app.include_router(favorites.router)
+
+
+# ---------------------------------------------------------------------------
+# Migración de imágenes al arrancar
+# ---------------------------------------------------------------------------
+@app.on_event("startup")
+async def startup_event() -> None:
+    """Migra las imágenes del seed a Cloudinary al arrancar la aplicación."""
+    import logging
+    from infrastructure.persistence.seed_data import migrate_seed_images
+
+    logger = logging.getLogger(__name__)
+    try:
+        await migrate_seed_images(get_car_repository())
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("La migración de imágenes a Cloudinary falló: %s", exc)
 
 
 # ---------------------------------------------------------------------------
