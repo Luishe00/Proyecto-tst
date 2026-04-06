@@ -25,7 +25,7 @@ API REST profesional desarrollada con **FastAPI** para gestionar un catálogo de
 - ✅ **Arquitectura Hexagonal** (Ports & Adapters)
 - ✅ **Autenticación OAuth2 con JWT** (roles: `admin`, `user`, anónimo)
 - ✅ **Persistencia In-Memory** (sin base de datos externa, 100% portable)
-- ✅ **25 coches premium precargados** (Porsche, Ferrari, Lamborghini, Aston Martin, McLaren)
+- ✅ **20 coches premium precargados** (Porsche, Ferrari, Lamborghini, Aston Martin, McLaren)
 - ✅ **Validación con Pydantic v2**
 - ✅ **Filtrado dinámico** del catálogo por marca, CV, velocidad y precio
 - ✅ **Sistema de Favoritos** por usuario
@@ -102,7 +102,7 @@ backend/
     ├── auth/
     │   └── jwt_handler.py           # Creación/verificación de tokens JWT
     ├── persistence/
-  │   ├── seed_data.py             # 25 coches + 2 usuarios + migración de imágenes
+  │   ├── seed_data.py             # 20 coches + 2 usuarios + migración de imágenes
     │   ├── in_memory_car_repository.py
     │   ├── in_memory_user_repository.py
     │   └── in_memory_favorite_repository.py
@@ -177,7 +177,7 @@ pip install -r requirements.txt
 
 - El proyecto está probado con **Python 3.13.9**.
 - Si faltan credenciales de Cloudinary, la API puede arrancar, pero la migración de imágenes del seed y la subida de nuevas imágenes no funcionarán correctamente.
-- En el arranque, la aplicación intenta asegurar que las 25 imágenes del seed existan en Cloudinary. Si ya existen, se reutilizan y se omite la subida.
+- En el arranque, la aplicación intenta asegurar que las 20 imágenes del seed existan en Cloudinary. Si ya existen, se reutilizan y se omite la subida.
 
 ---
 

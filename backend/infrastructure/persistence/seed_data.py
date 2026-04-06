@@ -1,6 +1,6 @@
 """
 Datos de seed para inicializar el sistema con coches premium y usuarios de prueba.
-Incluye 25 coches reales (5 por cada marca premium) y 2 usuarios (admin y user).
+Incluye 20 coches reales (4 por cada marca premium) y 2 usuarios (admin y user).
 """
 import asyncio
 import logging
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # ---------------------------------------------------------------------------
-# 25 Coches Premium (5 por marca)
+# 20 Coches Premium (4 por marca)
 # ---------------------------------------------------------------------------
 SEED_CARS: list[Car] = [
     # ── Porsche ─────────────────────────────────────────────────────────────
@@ -328,13 +328,13 @@ SEED_USERS: list[User] = [
 
 async def migrate_seed_images(car_repository) -> None:
     """
-    Recorre los 25 coches del seed y asegura que cada uno tiene su imagen en Cloudinary.
+    Recorre los 20 coches del seed y asegura que cada uno tiene su imagen en Cloudinary.
 
     Lógica inteligente por arranque:
     - Si el public_id YA EXISTE en Cloudinary: recupera la URL y actualiza el Car (sin subir).
     - Si NO EXISTE: descarga el placeholder y lo sube a Cloudinary.
 
-    Primera ejecución: sube los 25. Arranques posteriores: termina en < 1 segundo.
+    Primera ejecución: sube los 20. Arranques posteriores: termina en < 1 segundo.
     """
     from infrastructure.adapters.cloudinary_adapter import CloudinaryAdapter
 
