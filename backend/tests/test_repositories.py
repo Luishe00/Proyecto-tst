@@ -53,15 +53,15 @@ def test_in_memory_car_repository_edge_cases_seed_and_missing_ids() -> None:
 
     # Edge case: seed completo en memoria
     cars = repo.get_all()
-    assert len(cars) == 25
+    assert len(cars) == 20
     assert repo.get_by_id(1) is not None
-    assert repo.get_by_id(25) is not None
+    assert repo.get_by_id(20) is not None
 
     # Edge case: IDs inexistentes
     assert repo.get_by_id(99999) is None
     assert repo.update(99999, {"precio": 1}) is None
 
-    # Edge case: tras seed, el siguiente ID autogenerado debe ser 26
+    # Edge case: tras seed, el siguiente ID autogenerado debe ser 21
     created = repo.create(
         Car(
             marca="Test",
@@ -74,7 +74,7 @@ def test_in_memory_car_repository_edge_cases_seed_and_missing_ids() -> None:
             year=2020,
         )
     )
-    assert created.id == 26
+    assert created.id == 21
 
 
 def test_in_memory_favorite_repository_methods() -> None:

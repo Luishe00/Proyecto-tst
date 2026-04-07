@@ -54,7 +54,7 @@ def mock_cloudinary_upload() -> Generator[None, None, None]:
 @pytest.fixture(scope="function")
 def test_state() -> TestState:
     """Infraestructura efímera por test para garantizar independencia total."""
-    # Crear repositorios SIN cargar los 25 coches del seed (para aislamiento en tests)
+    # Crear repositorios SIN cargar los 20 coches del seed (para aislamiento en tests)
     car_repo = InMemoryCarRepository(load_seed=False)
     user_repo = InMemoryUserRepository()
     favorite_repo = InMemoryFavoriteRepository()

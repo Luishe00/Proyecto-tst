@@ -20,7 +20,7 @@ class InMemoryCarRepository(CarRepository):
 
     def _seed(self) -> None:
         for car in SEED_CARS:
-            self.create(car)
+            self.create(car.model_copy())
 
     def get_all(self) -> List[Car]:
         """Devuelve todos los coches almacenados."""
