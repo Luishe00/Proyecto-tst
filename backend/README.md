@@ -9,14 +9,13 @@ API REST profesional desarrollada con **FastAPI** para gestionar un catálogo de
 1. [Características](#características)
 2. [Arquitectura Hexagonal](#arquitectura-hexagonal)
 3. [Estructura del Proyecto](#estructura-del-proyecto)
-4. [Configuración del Entorno](#configuración-del-entorno)
-   - [Opción A — Virtualenv (venv)](#opción-a--virtualenv-venv)
-   - [Opción B — Anaconda / Miniconda](#opción-b--anaconda--miniconda)
-5. [Ejecución](#ejecución)
-6. [Credenciales de Prueba](#credenciales-de-prueba)
-7. [Endpoints y Ejemplos de Uso](#endpoints-y-ejemplos-de-uso)
-8. [Niveles de Acceso](#niveles-de-acceso)
-9. [Filtros Disponibles](#filtros-disponibles)
+4. [Configuración Zero-Config](#configuración-zero-config)
+5. [Uso](#uso)
+6. [Calidad](#calidad)
+7. [Credenciales de Prueba](#credenciales-de-prueba)
+8. [Endpoints y Ejemplos de Uso](#endpoints-y-ejemplos-de-uso)
+9. [Niveles de Acceso](#niveles-de-acceso)
+10. [Filtros Disponibles](#filtros-disponibles)
 
 ---
 
@@ -77,7 +76,6 @@ backend/
 ├── main.py                          # Punto de entrada (uvicorn)
 ├── requirements.txt
 ├── README.md
-├── .env                             # Credenciales de Cloudinary (local)
 │
 ├── domain/                          # Capa de Dominio
 │   ├── entities/
@@ -122,66 +120,50 @@ backend/
 
 ---
 
-## Configuración del Entorno
+## Configuración Zero-Config
 
-### Opción A — Virtualenv (venv)
+### ✅ Requisitos mínimos
+
+- 🐍 **Python 3.11+**
+- 📦 Dependencias del proyecto en `requirements.txt`
+
+### ⚡ Instalación rápida
 
 ```bash
 # 1. Clonar el repositorio
 git clone https://github.com/Luishe00/Proyecto-tst.git
 cd Proyecto-tst/backend
 
-# 2. Crear y activar el entorno virtual
-python -m venv venv
+# 2. (Opcional) Crear y activar entorno virtual
+python -m venv .venv
 
-# En Windows:
-venv\Scripts\activate
+# Windows
+.venv\Scripts\activate
 
-# En macOS / Linux:
-source venv/bin/activate
+# macOS / Linux
+source .venv/bin/activate
 
 # 3. Instalar dependencias
 pip install -r requirements.txt
-
-# 4. Crear archivo .env
 ```
 
-Archivo `.env` mínimo:
+### ☁️ Cloudinary (sin configuración para visualizar catálogo)
 
-```env
-CLOUDINARY_CLOUD_NAME=tu_cloud_name
-CLOUDINARY_API_KEY=tu_api_key
-CLOUDINARY_API_SECRET=tu_api_secret
-```
+No necesitas crear cuentas ni configurar variables de entorno para ejecutar la API y **visualizar el catálogo**.
 
-### Opción B — Anaconda / Miniconda
+- Las imágenes del seed ya vienen con **URLs directas pre-cargadas**.
+- Esto permite levantar el proyecto en modo **Zero-Config** para demos y pruebas rápidas.
 
-```bash
-# 1. Clonar el repositorio
-git clone https://github.com/Luishe00/Proyecto-tst.git
-cd Proyecto-tst/backend
+### 🧠 Nota de persistencia
 
-# 2. Crear el entorno conda
-conda create -n premium-cars python=3.13 -y
+La aplicación usa repositorios en memoria (`InMemoryCarRepository`).
 
-# 3. Activar el entorno
-conda activate premium-cars
-
-# 4. Instalar dependencias 
-pip install -r requirements.txt
-
-# 5. Crear archivo .env
-```
-
-## Notas de configuración
-
-- El proyecto está probado con **Python 3.13.9**.
-- Si faltan credenciales de Cloudinary, la API puede arrancar, pero la migración de imágenes del seed y la subida de nuevas imágenes no funcionarán correctamente.
-- En el arranque, la aplicación intenta asegurar que las 20 imágenes del seed existan en Cloudinary. Si ya existen, se reutilizan y se omite la subida.
+- Al reiniciar el servidor, los datos vuelven al estado inicial del `seed_data.py`.
+- Este comportamiento es ideal para demos, QA funcional y validaciones rápidas sin preparar base de datos externa.
 
 ---
 
-## Ejecución
+## Uso
 
 Desde la carpeta `backend/` con el entorno activo:
 
@@ -201,10 +183,19 @@ La API estará disponible en:
 - **Swagger UI:** `http://localhost:8000/docs`
 - **ReDoc:** `http://localhost:8000/redoc`
 
-Durante el arranque verás mensajes de migración de imágenes a Cloudinary:
+---
 
-- `[SUBIDO]` cuando una imagen placeholder se sube por primera vez.
-- `[IGNORADO]` cuando esa imagen ya existe en Cloudinary y solo se reutiliza la URL.
+## Calidad
+
+### 🧪 Cobertura de tests (99%)
+
+El proyecto mantiene una cobertura de tests del **99%**, con foco en casos de uso, repositorios y endpoints principales.
+
+Para ejecutar pruebas con reporte de cobertura:
+
+```bash
+pytest --cov=.
+```
 
 ---
 
